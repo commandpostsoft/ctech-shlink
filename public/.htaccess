@@ -1,7 +1,4 @@
 RewriteEngine On
-php_flag display_errors on
-
-
 # The following rule tells Apache that if the requested filename
 # exists, simply serve it.
 RewriteCond %{REQUEST_FILENAME} -f [OR]
