@@ -1,10 +1,14 @@
 RewriteEngine On
+php_flag display_errors on
+
+
 # The following rule tells Apache that if the requested filename
 # exists, simply serve it.
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -l [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [NC,L]
+
 
 # The following rewrites all other queries to index.php. The
 # condition ensures that if you are using Apache aliases to do
