@@ -16,3 +16,4 @@ docker-compose.override.yml
 docs/swagger/swagger-inlined.json
 config/.env
 .env
+.vscode/launch.json
