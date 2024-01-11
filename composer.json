@@ -166,7 +166,11 @@
         ],
         "swagger:validate": "php-openapi validate docs/swagger/swagger.json",
         "swagger:inline": "php-openapi inline docs/swagger/swagger.json docs/swagger/swagger-inlined.json",
-        "clean:dev": "rm -f data/database.sqlite && rm -f config/params/generated_config.php"
+        "clean:dev": "rm -f data/database.sqlite && rm -f config/params/generated_config.php",
+        "post-install-cmd": [
+            "php artisan clear-compiled",
+            "chmod -R 775 public/"
+        ]
     },
     "scripts-descriptions": {
         "ci": "<fg=blue;options=bold>Alias for \"cs\", \"stan\", \"swagger:validate\", \"test:ci\" and \"infect:ci\"</>",
