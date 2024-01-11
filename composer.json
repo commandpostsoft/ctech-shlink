@@ -168,7 +168,6 @@
         "swagger:inline": "php-openapi inline docs/swagger/swagger.json docs/swagger/swagger-inlined.json",
         "clean:dev": "rm -f data/database.sqlite && rm -f config/params/generated_config.php",
         "post-install-cmd": [
-            "php artisan clear-compiled",
             "chmod -R 775 public/"
         ]
     },
