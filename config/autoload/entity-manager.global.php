@@ -33,19 +33,23 @@ return (static function (): array {
         default => null,
     };
 
+    $urlParts = parse_url($readCredentialAsString(EnvVars::DATABASE_URL));
+
     $resolveConnection = static fn () => match ($driver) {
         null, 'sqlite' => [
             'driver' => 'pdo_sqlite',
             'path' => 'data/database.sqlite',
         ],
         default => [
+            
             'driver' => $resolveDriver(),
-            //'dbname' => EnvVars::DB_NAME->loadFromEnv('shlink'),
-            'url' => $readCredentialAsString(EnvVars::DATABASE_URL),
-            //'user' => $readCredentialAsString(EnvVars::DB_USER),
-            //'password' => $readCredentialAsString(EnvVars::DB_PASSWORD),
-            'host' => EnvVars::DB_HOST->loadFromEnv(EnvVars::DB_UNIX_SOCKET->loadFromEnv()),
-            'port' => EnvVars::DB_PORT->loadFromEnv($resolveDefaultPort()),
+            'user' => $urlParts['user'] ?? null,
+            'password' => $urlParts['pass'] ?? null,
+            'host' => $urlParts['host'] ?? null,
+            'port' => $urlParts['port'] ?? null,
+            'dbname' => ltrim($urlParts['path'], '/'),
+            //'host' => EnvVars::DB_HOST->loadFromEnv(EnvVars::DB_UNIX_SOCKET->loadFromEnv()),
+           // 'port' => EnvVars::DB_PORT->loadFromEnv($resolveDefaultPort()),
             'unix_socket' => $isMysqlCompatible ? EnvVars::DB_UNIX_SOCKET->loadFromEnv() : null,
             'charset' => $resolveCharset(),
             'driverOptions' => $driver !== 'mssql' ? [] : [
