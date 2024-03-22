@@ -8,6 +8,7 @@ use BackedEnum;
 use Cake\Chronos\Chronos;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
+use GuzzleHttp\Psr7\Query;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Laminas\Filter\Word\CamelCaseToSeparator;
 use Laminas\Filter\Word\CamelCaseToUnderscore;
@@ -18,14 +19,20 @@ use Shlinkio\Shlink\Core\ShortUrl\Model\ShortUrlMode;
 
 use function array_keys;
 use function array_map;
+use function array_pad;
 use function array_reduce;
 use function date_default_timezone_get;
+use function explode;
+use function implode;
 use function is_array;
 use function print_r;
 use function Shlinkio\Shlink\Common\buildDateRange;
+use function Shlinkio\Shlink\Core\ArrayUtils\map;
 use function sprintf;
 use function str_repeat;
+use function str_replace;
 use function strtolower;
+use function trim;
 use function ucfirst;
 
 function generateRandomShortCode(int $length, ShortUrlMode $mode = ShortUrlMode::STRICT): string
@@ -71,6 +78,52 @@ function normalizeOptionalDate(string|DateTimeInterface|Chronos|null $date): ?Ch
 function normalizeDate(string|DateTimeInterface|Chronos $date): Chronos
 {
     return normalizeOptionalDate($date);
+}
+
+function normalizeLocale(string $locale): string
+{
+    return trim(strtolower(str_replace('_', '-', $locale)));
+}
+
+/**
+ * Parse an accept-language-like pattern into a list of locales, optionally filtering out those which do not match a
+ * minimum quality
+ *
+ * @param non-empty-string $acceptLanguage
+ * @param float<0, 1> $minQuality
+ * @return iterable<string>;
+ */
+function acceptLanguageToLocales(string $acceptLanguage, float $minQuality = 0): iterable
+{
+    /** @var array{string, float|null}[] $acceptLanguagesList */
+    $acceptLanguagesList = map(explode(',', $acceptLanguage), static function (string $lang): array {
+        // Split locale/language and quality (en-US;q=0.7) -> [en-US, q=0.7]
+        [$lang, $qualityString] = array_pad(explode(';', $lang), length: 2, value: '');
+        $normalizedLang = normalizeLocale($lang);
+        $quality = Query::parse(trim($qualityString))['q'] ?? 1;
+
+        return [$normalizedLang, (float) $quality];
+    });
+
+    foreach ($acceptLanguagesList as [$lang, $quality]) {
+        if ($lang !== '*' && $quality >= $minQuality) {
+            yield $lang;
+        }
+    }
+}
+
+/**
+ * Splits a locale into its corresponding language and country codes.
+ * The country code will be null if not present
+ *   'es-AR' -> ['es', 'AR']
+ *   'fr-FR' -> ['fr', 'FR']
+ *   'en' -> ['en', null]
+ *
+ * @return array{string, string|null}
+ */
+function splitLocale(string $locale): array
+{
+    return array_pad(explode('-', $locale), length: 2, value: null);
 }
 
 function getOptionalIntFromInputFilter(InputFilter $inputFilter, string $fieldName): ?int
@@ -181,4 +234,12 @@ function enumValues(string $enum): array
     return $cache[$enum] ?? (
         $cache[$enum] = array_map(static fn (BackedEnum $type) => (string) $type->value, $enum::cases())
     );
+}
+
+/**
+ * @param class-string<BackedEnum> $enum
+ */
+function enumToString(string $enum): string
+{
+    return sprintf('["%s"]', implode('", "', enumValues($enum)));
 }

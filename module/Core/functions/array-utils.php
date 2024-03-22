@@ -17,7 +17,6 @@ function contains(mixed $value, array $array): bool
 
 /**
  * @param array[] $multiArray
- * @return array
  */
 function flatten(array $multiArray): array
 {
@@ -71,4 +70,21 @@ function select_keys(array $array, array $keys): array
         ),
         ARRAY_FILTER_USE_KEY,
     );
+}
+
+/**
+ * @template T
+ * @template R
+ * @param iterable<T> $collection
+ * @param callable(T $value, string|number $key): R $callback
+ * @return R[]
+ */
+function map(iterable $collection, callable $callback): array
+{
+    $aggregation = [];
+    foreach ($collection as $key => $value) {
+        $aggregation[$key] = $callback($value, $key);
+    }
+
+    return $aggregation;
 }

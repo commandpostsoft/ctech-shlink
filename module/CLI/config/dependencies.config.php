@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace Shlinkio\Shlink\CLI;
 
-use GeoIp2\Database\Reader;
 use Laminas\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Shlinkio\Shlink\Common\Doctrine\NoDbNameConnectionFactory;
 use Shlinkio\Shlink\Core\Domain\DomainService;
 use Shlinkio\Shlink\Core\Options\TrackingOptions;
 use Shlinkio\Shlink\Core\Options\UrlShortenerOptions;
+use Shlinkio\Shlink\Core\RedirectRule\ShortUrlRedirectRuleService;
 use Shlinkio\Shlink\Core\ShortUrl;
 use Shlinkio\Shlink\Core\ShortUrl\Helper\ShortUrlStringifier;
 use Shlinkio\Shlink\Core\Tag\TagService;
 use Shlinkio\Shlink\Core\Visit;
 use Shlinkio\Shlink\Installer\Factory\ProcessHelperFactory;
 use Shlinkio\Shlink\IpGeolocation\GeoLite2\DbUpdater;
+use Shlinkio\Shlink\IpGeolocation\GeoLite2\GeoLite2ReaderFactory;
 use Shlinkio\Shlink\Rest\Service\ApiKeyService;
 use Symfony\Component\Console as SymfonyCli;
 use Symfony\Component\Lock\LockFactory;
@@ -33,6 +34,7 @@ return [
             PhpExecutableFinder::class => InvokableFactory::class,
 
             GeoLite\GeolocationDbUpdater::class => ConfigAbstractFactory::class,
+            RedirectRule\RedirectRuleHandler::class => InvokableFactory::class,
             Util\ProcessRunner::class => ConfigAbstractFactory::class,
 
             ApiKey\RoleResolver::class => ConfigAbstractFactory::class,
@@ -66,13 +68,15 @@ return [
             Command\Domain\ListDomainsCommand::class => ConfigAbstractFactory::class,
             Command\Domain\DomainRedirectsCommand::class => ConfigAbstractFactory::class,
             Command\Domain\GetDomainVisitsCommand::class => ConfigAbstractFactory::class,
+
+            Command\RedirectRule\ManageRedirectRulesCommand::class => ConfigAbstractFactory::class,
         ],
     ],
 
     ConfigAbstractFactory::class => [
         GeoLite\GeolocationDbUpdater::class => [
             DbUpdater::class,
-            Reader::class,
+            GeoLite2ReaderFactory::class,
             LOCAL_LOCK_FACTORY,
             TrackingOptions::class,
         ],
@@ -116,6 +120,12 @@ return [
         Command\Domain\ListDomainsCommand::class => [DomainService::class],
         Command\Domain\DomainRedirectsCommand::class => [DomainService::class],
         Command\Domain\GetDomainVisitsCommand::class => [Visit\VisitsStatsHelper::class, ShortUrlStringifier::class],
+
+        Command\RedirectRule\ManageRedirectRulesCommand::class => [
+            ShortUrl\ShortUrlResolver::class,
+            ShortUrlRedirectRuleService::class,
+            RedirectRule\RedirectRuleHandler::class,
+        ],
 
         Command\Db\CreateDatabaseCommand::class => [
             LockFactory::class,

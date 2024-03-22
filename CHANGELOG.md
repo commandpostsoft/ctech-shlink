@@ -4,13 +4,111 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [4.0.3] - 2024-03-15
+### Added
+* *Nothing*
+
+### Changed
+* *Nothing*
+
+### Deprecated
+* *Nothing*
+
+### Removed
+* *Nothing*
+
+### Fixed
+* [#2058](https://github.com/shlinkio/shlink/issues/2058) Fix DB credentials provided as env vars being casted to `int` if they include only numbers.
+* [#2060](https://github.com/shlinkio/shlink/issues/2060) Fix error when trying to redirect to a non-http long URL.
+
+
+## [4.0.2] - 2024-03-09
+### Added
+* *Nothing*
+
+### Changed
+* *Nothing*
+
+### Deprecated
+* *Nothing*
+
+### Removed
+* *Nothing*
+
+### Fixed
+* [#2021](https://github.com/shlinkio/shlink/issues/2021) Fix infinite GeoLite2 downloads.
+
+
+## [4.0.1] - 2024-03-08
+### Added
+* *Nothing*
+
+### Changed
+* *Nothing*
+
+### Deprecated
+* *Nothing*
+
+### Removed
+* *Nothing*
+
+### Fixed
+* [#2041](https://github.com/shlinkio/shlink/issues/2041) Document missing `color` and `bgColor` params for the QR code route in the OAS docs.
+* [#2043](https://github.com/shlinkio/shlink/issues/2043) Fix language redirect conditions matching too low quality accepted languages.
+
+
+## [4.0.0] - 2024-03-03
+### Added
+* [#1914](https://github.com/shlinkio/shlink/issues/1914) Add new dynamic redirects engine based on rules. Rules are conditions checked against the visitor's request, and when matching, they can result in a redirect to a different long URL.
+
+  Rules can be based on things like the presence of specific params, headers, locations, etc. This version ships with three initial rule condition types: device, query param and language.
+
+* [#1902](https://github.com/shlinkio/shlink/issues/1902) Add dynamic redirects based on query parameters.
+
+  This is implemented on top of the new [rule-based redirects](https://github.com/shlinkio/shlink/discussions/1912).
+
+* [#1915](https://github.com/shlinkio/shlink/issues/1915) Add dynamic redirects based on accept language.
+
+  This is implemented on top of the new [rule-based redirects](https://github.com/shlinkio/shlink/discussions/1912).
+
+* [#1868](https://github.com/shlinkio/shlink/issues/1868) Add support for [docker compose secrets](https://docs.docker.com/compose/use-secrets/) to the docker image.
+* [#1979](https://github.com/shlinkio/shlink/issues/1979) Allow orphan visits lists to be filtered by type.
+
+  This is supported both by the `GET /visits/orphan` API endpoint via `type=...` query param, and by the `visit:orphan` CLI command, via `--type` flag.
+
+* [#1904](https://github.com/shlinkio/shlink/issues/1904) Allow to customize QR codes foreground color, background color and logo.
+* [#1884](https://github.com/shlinkio/shlink/issues/1884) Allow a path prefix to be provided during short URL creation.
+
+  This can be useful to let Shlink generate partially random URLs, but with a known prefix.
+
+  Path prefixes are validated and filtered taking multi-segment slugs into consideration, which means slashes are replaced with dashes as long as multi-segment slugs are disabled.
+
+### Changed
+* [#1935](https://github.com/shlinkio/shlink/issues/1935) Replace dependency on abandoned `php-middleware/request-id` with userland simple middleware.
+* [#1988](https://github.com/shlinkio/shlink/issues/1988) Remove dependency on `league\uri` package.
+* [#1909](https://github.com/shlinkio/shlink/issues/1909) Update docker image to PHP 8.3.
+* [#1786](https://github.com/shlinkio/shlink/issues/1786) Run API tests with RoadRunner by default.
+* [#2008](https://github.com/shlinkio/shlink/issues/2008) Update to Doctrine ORM 3.0.
+* [#2010](https://github.com/shlinkio/shlink/issues/2010) Update to Symfony 7.0 components.
+* [#2016](https://github.com/shlinkio/shlink/issues/2016) Simplify and improve how code coverage is generated in API and CLI tests.
+* [#1674](https://github.com/shlinkio/shlink/issues/1674) Database columns persisting long URLs have now `TEXT` type, which allows for much longer values.
+
+### Deprecated
+* *Nothing*
+
+### Removed
+* [#1908](https://github.com/shlinkio/shlink/issues/1908) Remove support for openswoole (and swoole).
+
+### Fixed
+* [#2000](https://github.com/shlinkio/shlink/issues/2000) Fix short URL creation/edition getting stuck when trying to resolve the title of a long URL which never returns a response.
+
+
 ## [3.7.3] - 2024-01-04
 ### Added
 * *Nothing*
 
 ### Changed
 * [#1968](https://github.com/shlinkio/shlink/issues/1968) Move migrations from `data` to `module/Core`.
-* *Nothing*
 
 ### Deprecated
 * *Nothing*
