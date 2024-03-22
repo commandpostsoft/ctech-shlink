@@ -33,7 +33,8 @@ return (static function (): array {
         default => null,
     };
 
-    $urlParts = parse_url($readCredentialAsString(EnvVars::DATABASE_URL));
+    $urlParts = static fn() => parse_url($readCredentialAsString(EnvVars::DATABASE_URL));
+
 
     $resolveConnection = static fn () => match ($driver) {
         null, 'sqlite' => [
@@ -43,11 +44,11 @@ return (static function (): array {
         default => [
             
             'driver' => $resolveDriver(),
-            'user' => $urlParts['user'] ?? $readCredentialAsString(EnvVars::DB_USER),
-            'password' => $urlParts['pass'] ?? $readCredentialAsString(EnvVars::DB_PASSWORD),
-            'host' => $urlParts['host'] ?? EnvVars::DB_HOST->loadFromEnv(EnvVars::DB_UNIX_SOCKET->loadFromEnv()),
-            'port' => $urlParts['port'] ?? EnvVars::DB_PORT->loadFromEnv($resolveDefaultPort()),
-            'dbname' => ltrim($urlParts['path'], '/')??EnvVars::DB_NAME->loadFromEnv('shlink'),
+            'user' => $urlParts()['user'] ?? $readCredentialAsString(EnvVars::DB_USER),
+            'password' => $urlParts()['pass'] ?? $readCredentialAsString(EnvVars::DB_PASSWORD),
+            'host' => $urlParts()['host'] ?? EnvVars::DB_HOST->loadFromEnv(EnvVars::DB_UNIX_SOCKET->loadFromEnv()),
+            'port' => $urlParts()['port'] ?? EnvVars::DB_PORT->loadFromEnv($resolveDefaultPort()),
+            'dbname' => ltrim($urlParts()['path'], '/')??EnvVars::DB_NAME->loadFromEnv('shlink'),
             'unix_socket' => $isMysqlCompatible ? EnvVars::DB_UNIX_SOCKET->loadFromEnv() : null,
             'charset' => $resolveCharset(),
             'driverOptions' => $driver !== 'mssql' ? [] : [
