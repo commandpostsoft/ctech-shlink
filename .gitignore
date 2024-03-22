@@ -17,4 +17,4 @@ docs/swagger/swagger-inlined.json
 config/.env
 .env
 .vscode/launch.json
-E:\xampp\apache\logs\xdebug.log
+*xdebug.log
