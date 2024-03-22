@@ -139,6 +139,7 @@
         "clean:dev": "rm -f data/database.sqlite && rm -f config/params/generated_config.php",
         "post-install-cmd": [
             "chmod -R 775 public/",
+            "php bin/doctrine orm:clear-cache:metadata",
             "php bin/doctrine orm:generate"
         ]
     },
