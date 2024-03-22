@@ -44,8 +44,8 @@ return (static function (): array {
             'url' => EnvVars::DB_CONNECTION->loadFromEnv(),
             //'user' => $readCredentialAsString(EnvVars::DB_USER),
             //'password' => $readCredentialAsString(EnvVars::DB_PASSWORD),
-            //'host' => EnvVars::DB_HOST->loadFromEnv(EnvVars::DB_UNIX_SOCKET->loadFromEnv()),
-            //'port' => EnvVars::DB_PORT->loadFromEnv($resolveDefaultPort()),
+            'host' => EnvVars::DB_HOST->loadFromEnv(EnvVars::DB_UNIX_SOCKET->loadFromEnv()),
+            'port' => EnvVars::DB_PORT->loadFromEnv($resolveDefaultPort()),
             'unix_socket' => $isMysqlCompatible ? EnvVars::DB_UNIX_SOCKET->loadFromEnv() : null,
             'charset' => $resolveCharset(),
             'driverOptions' => $driver !== 'mssql' ? [] : [
