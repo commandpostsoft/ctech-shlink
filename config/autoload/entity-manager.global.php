@@ -41,7 +41,7 @@ return (static function (): array {
         default => [
             'driver' => $resolveDriver(),
             //'dbname' => EnvVars::DB_NAME->loadFromEnv('shlink'),
-            'url' => EnvVars::DATABASE_URL->loadFromEnv(),
+            'url' => $readCredentialAsString(EnvVars::DATABASE_URL),
             //'user' => $readCredentialAsString(EnvVars::DB_USER),
             //'password' => $readCredentialAsString(EnvVars::DB_PASSWORD),
             'host' => EnvVars::DB_HOST->loadFromEnv(EnvVars::DB_UNIX_SOCKET->loadFromEnv()),
