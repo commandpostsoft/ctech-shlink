@@ -17,6 +17,7 @@ enum EnvVars: string
     case DB_NAME = 'DB_NAME';
     case DB_USER = 'DB_USER';
     case DB_PASSWORD = 'DB_PASSWORD';
+    case DATABASE_URL = 'DATABASE_URL';
     case DB_HOST = 'DB_HOST';
     case DB_UNIX_SOCKET = 'DB_UNIX_SOCKET';
     case DB_PORT = 'DB_PORT';
