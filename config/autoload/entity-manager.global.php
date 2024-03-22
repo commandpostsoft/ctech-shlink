@@ -43,13 +43,11 @@ return (static function (): array {
         default => [
             
             'driver' => $resolveDriver(),
-            'user' => $urlParts['user'] ?? null,
-            'password' => $urlParts['pass'] ?? null,
-            'host' => $urlParts['host'] ?? null,
-            'port' => $urlParts['port'] ?? null,
-            'dbname' => ltrim($urlParts['path'], '/'),
-            //'host' => EnvVars::DB_HOST->loadFromEnv(EnvVars::DB_UNIX_SOCKET->loadFromEnv()),
-           // 'port' => EnvVars::DB_PORT->loadFromEnv($resolveDefaultPort()),
+            'user' => $urlParts['user'] ?? $readCredentialAsString(EnvVars::DB_USER),
+            'password' => $urlParts['pass'] ?? $readCredentialAsString(EnvVars::DB_PASSWORD),
+            'host' => $urlParts['host'] ?? EnvVars::DB_HOST->loadFromEnv(EnvVars::DB_UNIX_SOCKET->loadFromEnv()),
+            'port' => $urlParts['port'] ?? EnvVars::DB_PORT->loadFromEnv($resolveDefaultPort()),
+            'dbname' => ltrim($urlParts['path'], '/')??EnvVars::DB_NAME->loadFromEnv('shlink'),
             'unix_socket' => $isMysqlCompatible ? EnvVars::DB_UNIX_SOCKET->loadFromEnv() : null,
             'charset' => $resolveCharset(),
             'driverOptions' => $driver !== 'mssql' ? [] : [
