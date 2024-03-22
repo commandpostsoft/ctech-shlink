@@ -1,0 +1,7 @@
+[47125] Log opened at 2024-03-22 13:57:22.267245
+[47125] [Step Debug] WARN: Debugger is not working optimally, as Xdebug is loaded before Zend OPcache
+[47125] [Step Debug] INFO: Connecting to configured address/port: 127.0.0.1:9003.
+[47125] [Step Debug] WARN: Creating socket for '127.0.0.1:9003', poll success, but error: Operation now in progress (19).
+[47125] [Step Debug] ERR: Could not connect to debugging client. Tried: 127.0.0.1:9003 (through xdebug.client_host/xdebug.client_port).
+[47125] Log closed at 2024-03-22 13:57:28.691598
+
